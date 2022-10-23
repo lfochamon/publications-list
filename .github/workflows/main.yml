@@ -1,0 +1,54 @@
+on: push
+name: Fix bibliography
+
+
+jobs:
+  fix_bib:
+    if: github.repository_owner == 'lfochamon'
+
+    runs-on: ubuntu-latest
+    env:
+      PATH_BIB: publications.bib
+      PATH_RSC: .github/workflows/bibtool.rsc
+      PATH_PY: .github/workflows/fix_bib.py
+      COMMIT_MESSAGE: '[Auto] Apply fixes to bib file'
+      COMMIT_AUTHOR: Luiz Chamon
+      COMMIT_EMAIL: luizchamon@gmail.com
+
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install bibtool
+        run: sudo apt-get update && sudo apt-get install bibtool
+
+      - name: Fix bibliography
+        run: |
+          bibtool -s -d -r ${{env.PATH_RSC}} -i ${{env.PATH_BIB}} -o ${{env.PATH_BIB}}
+          python ${{env.PATH_PY}}
+
+      - name: Add, commit, and push website
+        run: |
+          git config --global user.name "${{ env.COMMIT_AUTHOR }}"
+          git config --global user.email "${{ env.COMMIT_EMAIL }}"
+          git add publications.bib
+          git commit -s -m "${{ env.COMMIT_MESSAGE }}"
+          git push origin main
+
+      - name: Trigger deployment workflow on website repository
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.ACTIONS_TOKEN }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'lfochamon',
+              repo: 'website',
+              workflow_id: 'main.yml',
+              ref: 'dev'
+            })
