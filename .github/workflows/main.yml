@@ -32,8 +32,13 @@ jobs:
         run: |
           bibtool -s -d -r ${{env.PATH_RSC}} -i ${{env.PATH_BIB}} -o ${{env.PATH_BIB}}
           python ${{env.PATH_PY}}
+      
+      - name: Check if there is anything to commit and push
+        id: haschanged
+        run: git diff --exit-code
 
       - name: Add, commit, and push website
+        if: steps.haschanged.outcome != 'success'
         run: |
           git config --global user.name "${{ env.COMMIT_AUTHOR }}"
           git config --global user.email "${{ env.COMMIT_EMAIL }}"
