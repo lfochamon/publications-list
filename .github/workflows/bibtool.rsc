@@ -12,7 +12,6 @@ count.used               = off
 crossref.limit           = 32
 default.key              = "**key*"
 delete.field             = {abstract}
-delete.field             = {doi}
 delete.field             = {issn}
 delete.field             = {isbn}
 delete.field             = {month}
