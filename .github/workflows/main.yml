@@ -34,6 +34,7 @@ jobs:
           python ${{env.PATH_PY}}
       
       - name: Check if there is anything to commit and push
+        continue-on-error: true
         id: haschanged
         run: git diff --exit-code
 
@@ -47,6 +48,7 @@ jobs:
           git push origin main
 
       - name: Trigger deployment workflow on website repository
+        if: always()
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.ACTIONS_TOKEN }}
