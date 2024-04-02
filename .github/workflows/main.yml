@@ -46,16 +46,3 @@ jobs:
           git add publications.bib
           git commit -s -m "${{ env.COMMIT_MESSAGE }}"
           git push origin main
-
-      - name: Trigger deployment workflow on website repository
-        if: always()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.ACTIONS_TOKEN }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'lfochamon',
-              repo: 'website',
-              workflow_id: 'main.yml',
-              ref: 'dev'
-            })
