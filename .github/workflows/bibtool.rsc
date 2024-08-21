@@ -1,7 +1,7 @@
 % My resource file
 %
 
-% bibtool -s -d -r mine.rsc -i "$file" -o "$file"
+% bibtool -r mine.rsc -i "$file" -o "$file"
 
 bibtex.env.name          = "BIBINPUTS"
 check.case.sensitive     = on
@@ -86,7 +86,7 @@ print.terminal.comma     = on
 select.crossrefs	 = off
 select.case.sensitive    = off
 select.fields            = "$key"
-sort                     = off
+sort                     = on
 sort.cased               = off
 sort.format              = "%d(year)"
 sort.macros              = on
